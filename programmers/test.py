@@ -1,67 +1,50 @@
-# 가장 먼 노드
-# https://programmers.co.kr/learn/courses/30/lessons/49189
+import copy
+from operator import eq
 
+answer = 100000
+alphabet = [i for i in range(26)]
+def DFS(arr,visit, name, value, i):
+    global answer
+    global alphabet
+    if(eq(name, arr)):
+        answer = value-1 if value-1 < answer else answer
+        return
 
-def bfs(graph, start):
-    queue = [start]
-    # 1번 인덱스가 1번 노드를 가리키기 위해서 distance 배열의 개수를 하나 더 늘려준다.
-    distance = [0] * (len(graph) + 1)
-    distance[0] = 0
-    distance[1] = 0
+    if(i == -1):
+        i = len(name)-1
+    if(i == len(name)):
+        i = 0
+    if (visit[i] > 1):
+        return
+    visit2 = copy.deepcopy(visit)
+    visit2[i] += 1
+    arr2 = copy.deepcopy(arr)
+    mid_val = abs(ord(name[i]) - ord(arr2[i]))
+    if(arr2[i] == name[i]):
+        DFS(arr2,visit2, name, value + 1, i + 1)
+        DFS(arr2,visit2, name, value + 1, i - 1)
+    else:
+        arr2[i] = name[i]
+        DFS(arr2,visit2, name, value + alphabet[mid_val] + 1, i + 1)
+        DFS(arr2,visit2, name, value + alphabet[mid_val] + 1, i - 1)
 
-    visited = [False] * (len(graph) + 1)
-    visited[0] = True
-    visited[1] = True
-
-    while(queue):
-        n = queue.pop(0)
-
-        for i in graph[n]:
-            # i 노드를 방문하지 않았으면 방문한다.
-            if visited[i] == False:
-                visited[i] = True
-                # i 노드의 주변 노드를 방문하기 위해 queue 에 추가.
-                queue.append(i)
-                # n 노드와 i 노드가 연결되어 있으므로 (n 노드까지의 최소 거리 + 1) 이 i 노드 까지의 최소 거리이다.
-                distance[i] = distance[n] + 1
-
-
-    return distance
-
-
-
-def solution(n, edge):
-
-    graph = {}
-
-    # 그래프 키 초기화
-    for i in range(1, n+1):
-        graph[i] = []
-
-
-    # 그래프 제작
-    for i in edge:
-        # 중복 방지를 위한 if 문
-        if i[1] not in graph[i[0]]:
-            graph[i[0]].append(i[1])
-
-        # 중복 방지를 위한 if 문
-        if i[0] not in graph[i[1]]:
-            graph[i[1]].append(i[0])
-
-
-    distance = bfs(graph, 1)
-    maximum = max(distance)
-    return distance.count(maximum)
+def solution(name):
+    global answer
+    global alphabet
+    k = 2
+    for i in range(14,len(alphabet)):
+        alphabet[i] = 14-k
+        k += 1
+    arr = ['A' for i in range(len(name))]
+    name2 = []
+    visit = [0 for i in range(len(name))]
+    for i in range(len(name)):
+        name2.append(name[i])
+    DFS(arr,visit,name2,0,0)
+    return answer
 
 
 
-
-n = 6
-edge = [[3, 6], [4, 3], [3, 2], [1, 3], [1, 2], [2, 4], [5, 2]]
-#edge = [[1,2]]
-#edge = [[1,2], [1,3], [2,3],[2,5],[2,4],[3,6],[3,8],[3,5],[4,7],[6,8],[5,9],[2,9],[3,7],[1,7]]
-#edge = [[1,2],[2,3],[3,5],[1,4],[4,5]]
-#edge = [[1,2],[2,3],[3,4]]
-answer = solution(n, edge)
+name = 'ABAAAABB'
+answer = solution(name)
 print(answer)
