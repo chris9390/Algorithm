@@ -1,3 +1,6 @@
+# 프린터
+# https://programmers.co.kr/learn/courses/30/lessons/42587
+
 def solution(priorities, location):
 
     # return 될 인쇄 횟수.
