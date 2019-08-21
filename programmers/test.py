@@ -1,4 +1,14 @@
-jobs = [[0, 3], [1, 9], [2, 6]]
+def solution(citations):
+    citations = sorted(citations)
+    l = len(citations)
+    for i in range(l):
+        if citations[i] >= l-i:
+            return l-i
+    return 0
 
-a = sorted(jobs, key=lambda x : x[1] - x[0])
-print(a)
+
+citations = [3, 0, 6, 1, 5]
+#citations = [22,42]
+citations = [0, 0, 0, 0, 1]
+answer = solution(citations)
+print(answer)
